@@ -17,28 +17,28 @@
 # please note, the ssh server config will be edited: please restart ssh server after execution
 # for changes to take effect.
 # ----------------------------------------------------------------------
-DOMAIN=$1
-if [ -z "$DOMAIN" ]; then
+domain=$1
+if [ -z "$domain" ]; then
   echo "Please specify a domain. \n\t Usage: $0 <domain>" >&2
   exit 1
 fi
 # Edit this path, if you would like the jail to be situatied in a 
 # different location.
 #
-PATH='/jail'
-mkdir -p $PATH
+path='/jail'
+mkdir -p $path
 
 # Edit these paths, if you would like jailed users to have access to
 # different commands.
 #
-BIN=(which bash which cat which cp which whoami which vi which grep which ls which touch which mkdir which more which mv which cp which less which pwd which id which head which tail)
+BIN=`which bash which cat which cp which whoami which vi which grep which ls which touch which mkdir which more which mv which cp which less which pwd which id which head which tail | tr '\n' '\t'`
 
-if ! grep -q "Match group domain?users@$DOMAIN" /etc/ssh/sshd_config
+if ! grep -q "Match group domain?users@$domain" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
-Match group domain?users@$DOMAIN
-  ChrootDirectory $PATH
+Match group domain?users@$domain
+  ChrootDirectory $path
   AllowTCPForwarding no
   X11Forwarding no
 " >> /etc/ssh/sshd_config
@@ -47,12 +47,12 @@ fi
 
 echo "Creating Jail Path"
 
-home_dir="$PATH/home"
-mkdir -p ${home_dir}
-chown root:root ${home_dir}
-chmod 755 ${home_dir}
+homeDir="$path/home"
+mkdir -p ${homeDir}
+chown root:root ${homeDir}
+chmod 755 ${homeDir}
 
-cd $PATH 
+cd $path 
 mkdir -p dev
 mkdir -p bin
 mkdir -p lib64
@@ -63,32 +63,32 @@ mkdir -p usr/lib64
 #Pick an OS
 if [ -e "/lib64/libnss_files.so.2" ]
 then
- cp -p /lib64/libnss_files.so.2 ${PATH}/lib64/libnss_files.so.2
+ cp -p /lib64/libnss_files.so.2 ${path}/lib64/libnss_files.so.2
 fi
 
 if [ -e "/lib/x86_64-linux-gnu/libnss_files.so.2" ]
 then
-  mkdir -p ${PATH}/lib/x86_64-linux-gnu
-  cp -p /lib/x86_64-linux-gnu/libnss_files.so.2 ${PATH}/lib/x86_64-linux-gnu/libnss_files.so.2
+  mkdir -p ${path}/lib/x86_64-linux-gnu
+  cp -p /lib/x86_64-linux-gnu/libnss_files.so.2 ${path}/lib/x86_64-linux-gnu/libnss_files.so.2
 fi
 
 
 # Creating additional paths so the system doesnt break
-[ -r $PATH/dev/urandom ] || mknod $PATH/dev/urandom c 1 9
-[ -r $PATH/dev/null ]    || mknod -m 666 $PATH/dev/null    c 1 3
-[ -r $PATH/dev/zero ]    || mknod -m 666 $PATH/dev/zero    c 1 5
-[ -r $PATH/dev/tty ]     || mknod -m 666 $PATH/dev/tty     c 5 0
+[ -r $path/dev/urandom ] || mknod $path/dev/urandom c 1 9
+[ -r $path/dev/null ]    || mknod -m 666 $path/dev/null    c 1 3
+[ -r $path/dev/zero ]    || mknod -m 666 $path/dev/zero    c 1 5
+[ -r $path/dev/tty ]     || mknod -m 666 $path/dev/tty     c 5 0
 
  
-BIN_PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+binPath=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 for bin in $BIN
 do
-  cp $bin ${BIN_PATH}${bin} > /dev/null 2>&1
+  cp $bin ${binPath}${bin} > /dev/null 2>&1
   if ldd $bin > /dev/null
   then
-    LIBS=`ldd $bin | grep '/lib' | sed 's/\t/ /g' | sed 's/ /\n/g' | grep "/lib"`
-    for l in $LIBS
+    libs=`ldd $bin | grep '/lib' | sed 's/\t/ /g' | sed 's/ /\n/g' | grep "/lib"`
+    for l in $libs
     do
       mkdir -p ./`dirname $l` > /dev/null 2>&1
       cp $l ./$l  > /dev/null 2>&1
@@ -101,12 +101,12 @@ echo "Jailing All Users in Domain Users Group"
 #T1: for user in $(getent group domain?users)     
 
 ##IF THE DOMAIN IS ON THE USERNAME, THE DOMAIN WILL STAY ON THE USER
-for user in $(getent group "domain users@$DOMAIN" | tr -s ',' '\n')   
+for user in $(getent group "domain users@$domain" | tr -s ',' '\n')   
 do
-	user_dir="${home_dir}/$user"
-	mkdir -p ${user_dir}
-	chmod 0700 ${user_dir}
-	chown $user:$group_name ${user_dir}
+	user_dir="${homeDir}/$user"
+	mkdir -p ${userDir}
+	chmod 0700 ${userDir}
+	chown $user:$user ${userDir}
 	
 	if [ ! -h "/home/${user}" -a -d "/home/${user}" ]
 		then
@@ -117,7 +117,7 @@ do
 	if [ ! -e "/home/${user}" ]
 	then
   		echo ":: Linking Jailed Home to Old /home"
-  		ln -s ${user_dir} /home/${user}
+  		ln -s ${userDir} /home/${user}
 	fi
 	
 done
