@@ -32,7 +32,7 @@ if ! grep -q "Match group domain?users" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
-Match group domain?users
+Match group domain?users@$DOMAIN
   ChrootDirectory $PATH
   AllowTCPForwarding no
   X11Forwarding no
