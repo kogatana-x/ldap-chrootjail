@@ -37,7 +37,7 @@ mkdir -p $path
 BIN=`which bash which cat which cp which whoami which vi which grep which ls which touch which mkdir which more which mv which cp which less which pwd which id which head which tail | tr '\n' '\t'`
 
 ##TODO: this doesnt work lol
-if ! grep -q "Match group $group" /etc/ssh/sshd_config
+if ! grep -q "Match group \"$group\"" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
