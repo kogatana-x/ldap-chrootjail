@@ -23,7 +23,7 @@ if [ -z "$domain" ]; then
   exit 1
 fi
 #Edit this if these users are in a different group
-domainGroup="domain users@$domain"
+group="domain users@$domain"
 
 # Edit this path, if you would like the jail to be situated in a 
 # different location.
@@ -110,7 +110,7 @@ echo "Jailing All Users in Domain Users Group"
     #for user in $(cat $file_path)
     
 ##TO AUTOMATICALLY GRAB USERS: {will have 3 messed up lines if using Microsoft AD}
-for user in $(getent group $group" | tr -s ',' '\n')   
+for user in $(getent group $group | tr -s ',' '\n')   
 do
 	userDir="${homeDir}/$user"
 	mkdir -p ${userDir}
