@@ -101,12 +101,13 @@ done
 
 # FOR EACH USER IN DOMAIN USERS GROUP:::
 echo "Jailing All Users in Domain Users Group"
-#T1: for user in $(getent group domain?users)     
-##TO MANUALLY GRAB USERS:
-  file_path="user_list"
-  getent group $group | tr -s ',' '\n' > $file_path
-  #for user in $(cat $file_path)
 
+##TO MANUALLY GRAB USERS RUN THESE & CLEAN UP THE FILE:
+  #getent group $group | tr -s ',' '\n' > user_list
+  #AND THEN UNCOMMENT THESE:
+    #file_path="user_list" 
+    #for user in $(cat $file_path)
+    
 ##TO AUTOMATICALLY GRAB USERS: {will have 3 messed up lines if using Microsoft AD}
 for user in $(getent group $group" | tr -s ',' '\n')   
 do
