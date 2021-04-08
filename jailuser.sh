@@ -90,7 +90,10 @@ done
 
 # FOR EACH USER IN DOMAIN USERS GROUP:::
 echo "Jailing All Users in Domain Users Group"
-for user in $(getent group domain?users)       ####TODO
+####TODO
+#T1: for user in $(getent group domain?users)       
+#T2: 
+for user in $(getent group 513)    
 do
 	user_dir="${home_dir}/$user"
 	mkdir -p ${user_dir}
