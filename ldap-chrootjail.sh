@@ -76,7 +76,7 @@ fi
 
  
 BIN_PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-BIN="`which bash` `which cat` `which cp` `which whoami` `which vi` `which grep` `which ls` `which touch` `which mkdir` `which more` `which mv` `which cp` `which less` `which pwd` `which id` `which head` `which tail`"
+BIN=$(`which bash` `which cat` `which cp` `which whoami` `which vi` `which grep` `which ls` `which touch` `which mkdir` `which more` `which mv` `which cp` `which less` `which pwd` `which id` `which head` `which tail`)
 
 for bin in $BIN
 do
