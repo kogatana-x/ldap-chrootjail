@@ -22,6 +22,9 @@ if [ -z "$domain" ]; then
   echo "Please specify a domain. \n\t Usage: $0 <domain>" >&2
   exit 1
 fi
+#Edit this if these users are in a different group
+domainGroup="domain users@$domain"
+
 # Edit this path, if you would like the jail to be situated in a 
 # different location.
 #
@@ -33,11 +36,11 @@ mkdir -p $path
 #
 BIN=`which bash which cat which cp which whoami which vi which grep which ls which touch which mkdir which more which mv which cp which less which pwd which id which head which tail | tr '\n' '\t'`
 
-if ! grep -q "Match group domain?users@$domain" /etc/ssh/sshd_config
+if ! grep -q "Match group $group" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
-Match group domain?users@$domain
+Match group $group
   ChrootDirectory $path
   AllowTCPForwarding no
   X11Forwarding no
@@ -99,14 +102,18 @@ done
 # FOR EACH USER IN DOMAIN USERS GROUP:::
 echo "Jailing All Users in Domain Users Group"
 #T1: for user in $(getent group domain?users)     
+##TO MANUALLY GRAB USERS:
+  file_path="user_list"
+  getent group $group | tr -s ',' '\n' > $file_path
+  #for user in $(cat $file_path)
 
-##IF THE DOMAIN IS ON THE USERNAME, THE DOMAIN WILL STAY ON THE USER
-for user in $(getent group "domain users@$domain" | tr -s ',' '\n')   
+##TO AUTOMATICALLY GRAB USERS: {will have 3 messed up lines if using Microsoft AD}
+for user in $(getent group $group" | tr -s ',' '\n')   
 do
 	userDir="${homeDir}/$user"
 	mkdir -p ${userDir}
 	chmod 0700 ${userDir}
-	chown $user:$user ${userDir}
+	chown $user:$group ${userDir}
 	
 	if [ ! -h "/home/${user}" -a -d "/home/${user}" ]
 		then
