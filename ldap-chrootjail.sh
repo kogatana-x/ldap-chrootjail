@@ -22,7 +22,7 @@ if [ -z "$domain" ]; then
   echo "Please specify a domain. \n\t Usage: $0 <domain>" >&2
   exit 1
 fi
-# Edit this path, if you would like the jail to be situatied in a 
+# Edit this path, if you would like the jail to be situated in a 
 # different location.
 #
 path='/jail'
@@ -103,7 +103,7 @@ echo "Jailing All Users in Domain Users Group"
 ##IF THE DOMAIN IS ON THE USERNAME, THE DOMAIN WILL STAY ON THE USER
 for user in $(getent group "domain users@$domain" | tr -s ',' '\n')   
 do
-	user_dir="${homeDir}/$user"
+	userDir="${homeDir}/$user"
 	mkdir -p ${userDir}
 	chmod 0700 ${userDir}
 	chown $user:$user ${userDir}
