@@ -41,7 +41,7 @@ if ! grep -q "Match group \"$group\"" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
-Match group $group
+Match group \"$group\"
   ChrootDirectory $path
   AllowTCPForwarding no
   X11Forwarding no
