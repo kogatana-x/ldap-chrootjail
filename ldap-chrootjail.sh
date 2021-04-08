@@ -28,7 +28,7 @@ fi
 PATH='/jail'
 mkdir -p $PATH
 
-if ! grep -q "Match group domain?users" /etc/ssh/sshd_config
+if ! grep -q "Match group domain?users@$DOMAIN" /etc/ssh/sshd_config
 then
   echo "Configuring Jail Group in SSH"
   echo "
