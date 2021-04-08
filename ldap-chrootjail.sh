@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ----------------------------------------------------------------------
-# ldap-jailuser.sh 
+# ldap-jailuser.sh <DOMAIN>
 #
 # This script creates a jail for all users tied to Windows AD 
 # whenever they login to the server after running this script. 
@@ -17,7 +17,11 @@
 # please note, the ssh server config will be edited: please restart ssh server after execution
 # for changes to take effect.
 # ----------------------------------------------------------------------
-
+DOMAIN=$1
+if [ -z "$DOMAIN" ]; then
+  echo "Please specify a domain. \n\t Usage: $0 <domain>" >&2
+  exit 1
+fi
 # Edit this path, if you would like the jail to be situatied in a 
 # different location.
 #
@@ -90,10 +94,10 @@ done
 
 # FOR EACH USER IN DOMAIN USERS GROUP:::
 echo "Jailing All Users in Domain Users Group"
-####TODO
-#T1: for user in $(getent group domain?users)       
-#T2: 
-for user in $(getent group 513)    
+#T1: for user in $(getent group domain?users)     
+
+##IF THE DOMAIN IS ON THE USERNAME, THE DOMAIN WILL STAY ON THE USER
+for user in $(getent group "domain users@$DOMAIN" | tr -s ',' '\n')   
 do
 	user_dir="${home_dir}/$user"
 	mkdir -p ${user_dir}
